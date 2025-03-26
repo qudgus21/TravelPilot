@@ -5,14 +5,27 @@ dotenv.config();
 const SELECTORS = {
   searchInput: 'input.SearchBoxTextEditor[data-selenium="textInput"]',
   searchUl: 'ul.AutocompleteList li[data-selenium="topDestinationListItem"]',
-  searchLi: 'li[data-selenium="topDestinationListItem"]',
-  searchButton: 'button[data-selenium="searchButton"]',
+  searchLi: 'span[data-selenium="suggestion-text-highlight"]',
+  searchButton: 'button[data-selenium="searchButton"]:has-text("검색하기")',
   hotelLinkSelector: 'li[data-selenium="hotel-item"] a',
 };
 
-async function getHotelFullUrl(page, hotelName) {
-  return new Promise((resolve) => {
-    page.route("**/api/cronos/layout/GetHotCities", async (route, request) => {
+export async function crawlHotelByName(hotelName) {
+  // 0.브라우저 세팅
+  const browser = await chromium.launch({ headless: false }); // development
+  //const browser = await chromium.launch({ headless: true }); // 브라우저 안 보이게(production)
+  const page = await browser.newPage();
+  let hotelUrl = "";
+
+  try {
+    // 1. Agoda 메인 진입
+    await page.goto(process.env.AGODA_URL_KR, {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    });
+
+    // 2. api 인터셉트 미리 걸어두기
+    await page.route("**/api/cronos/layout/GetHotCities", async (route) => {
       const response = await route.fetch();
       const json = await response.json();
 
@@ -23,63 +36,50 @@ async function getHotelFullUrl(page, hotelName) {
         item.resultText.toLowerCase().includes(hotelName.toLowerCase())
       );
 
-      const fullUrl = match?.fullSearchUrl
+      hotelUrl = match?.fullSearchUrl
         ? process.env.AGODA_URL + match.fullSearchUrl
         : null;
 
-      resolve(fullUrl);
-      await route.fulfill({ response });
-    });
-  });
-}
-
-export async function crawlHotelByName(hotelName) {
-  // 0.브라우저 세팅
-  //   const browser = await chromium.launch({ headless: false }); // development
-  const browser = await chromium.launch({ headless: true }); // 브라우저 안 보이게(production)
-  const page = await browser.newPage();
-
-  try {
-    // 1. Agoda 메인 진입
-    await page.goto(process.env.AGODA_URL_KR, {
-      waitUntil: "domcontentloaded",
-      timeout: 60000,
+      await route.continue();
     });
 
-    // 2. 호텔이름 입력
+    // 3. 호텔이름 입력
     await page.waitForSelector(SELECTORS.searchInput);
     await page.fill(SELECTORS.searchInput, hotelName);
 
-    // 3. 호텔 검색(호텔 클릭 두 번해야 다른 모달이 닫힘)
+    // 4. 호텔 검색(호텔 클릭 두 번해야 다른 모달이 닫힘)
+    await page.waitForTimeout(300);
     await page.waitForSelector(SELECTORS.searchUl);
+    await page.waitForSelector(SELECTORS.searchButton);
+    await page.waitForSelector(SELECTORS.searchLi);
+    await page.click(SELECTORS.searchLi);
+    await page.waitForTimeout(300);
     await page.click(SELECTORS.searchButton);
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(300);
     await page.click(SELECTORS.searchButton);
-
-    // 4. api 가로채서 주소 얻기
-    const hotelUrl = await getHotelFullUrl(page, hotelName);
+    await page.waitForTimeout(3000);
 
     if (!hotelUrl) {
-      throw new Error("❌ 호텔 URL을 찾지 못했어요.");
+      throw new Error();
     }
 
-    // 4. 상세페이지로 이동
-    const [newPage] = await Promise.all([
+    // 5. 호텔 상세페이지로 이동
+    const [hotelPage] = await Promise.all([
       page.waitForEvent("popup"),
       page.evaluate((url) => window.open(url, "_blank"), hotelUrl),
     ]);
 
-    // 5. 팝업 페이지 로드 기다리기
-    await newPage.waitForLoadState("domcontentloaded");
+    // 6. 호텔 상세페이지 로드 기다리기
+    await hotelPage.waitForLoadState("domcontentloaded");
 
-    await newPage.waitForSelector("p.fHvoAu");
-    await newPage.waitForSelector(
+    await hotelPage.waitForSelector("p.fHvoAu");
+    await hotelPage.waitForSelector(
       'button[data-element-name="hotel-mosaic-tile"]'
     );
-    await newPage.waitForTimeout(1000);
+    await hotelPage.waitForTimeout(2000);
 
     //6. 필요한 정보 추출
-    const result = await newPage.evaluate(() => {
+    const result = await hotelPage.evaluate(() => {
       const getText = (selector) =>
         document.querySelector(selector)?.innerText.trim() || "";
 
@@ -119,7 +119,7 @@ export async function crawlHotelByName(hotelName) {
     return result;
   } catch (err) {
     await browser.close();
-    console.error("❌ 크롤링 실패:", err.message, hotelName);
+    console.error("❌ 크롤링 실패: ", hotelName);
     return null;
   }
 }
