@@ -12,8 +12,8 @@ const SELECTORS = {
 
 export async function crawlHotelByName(hotelName) {
   // 0.브라우저 세팅
-  const browser = await chromium.launch({ headless: false }); // development
-  //const browser = await chromium.launch({ headless: true }); // 브라우저 안 보이게(production)
+  //const browser = await chromium.launch({ headless: false }); // development
+  const browser = await chromium.launch({ headless: true }); // 브라우저 안 보이게(production)
   const page = await browser.newPage();
   let hotelUrl = "";
 
