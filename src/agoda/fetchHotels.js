@@ -2,25 +2,81 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-export async function fetchHotels({ cityId, minPrice, maxPrice }) {
+const SORT_OPTIONS = [
+  "Recommended",
+  "PriceDesc",
+  "PriceAsc",
+  "StarRatingDesc",
+  "StarRatingAsc",
+  "AllGuestsReviewScore",
+  "BusinessTravellerReviewScore",
+  "CouplesReviewScore",
+  "SoloTravllersReviewScore",
+  "FamiliesWithYoungReviewScore",
+  "FamiliesWithTeenReviewScore",
+  "GroupsReviewScore",
+];
+
+function getDefaultDates() {
+  const today = new Date();
+  const checkIn = new Date(today);
+  checkIn.setDate(today.getDate() + 7);
+
+  const checkOut = new Date(checkIn);
+  checkOut.setDate(checkIn.getDate() + 1);
+
+  const format = (date) => date.toISOString().split("T")[0];
+  return {
+    checkInDate: format(checkIn),
+    checkOutDate: format(checkOut),
+  };
+}
+
+export async function fetchHotels({
+  cityId,
+  sortBy = "Recommended",
+  maxResult = 5,
+  numberOfAdult = 2,
+  numberOfChildren = 0,
+  minPrice = 0,
+  maxPrice = 100000,
+  minimumStarRating = 0,
+  minimumReviewScore = 0,
+  discountOnly = false,
+  language = "ko-kr",
+  currency = "KRW",
+}) {
+  if (!cityId) {
+    throw new Error("❌ cityId는 필수입니다.");
+  }
+
+  if (!SORT_OPTIONS.includes(sortBy)) {
+    throw new Error(`❌ 유효하지 않은 sortBy 값입니다: ${sortBy}`);
+  }
+
+  const { checkInDate, checkOutDate } = getDefaultDates();
+
   const payload = {
     criteria: {
-      checkInDate: "2025-04-01",
-      checkOutDate: "2025-04-02",
       cityId,
+      checkInDate,
+      checkOutDate,
       additional: {
-        language: "ko-kr",
-        currency: "KRW",
-        maxResult: 5,
-        sortBy: "PriceAsc",
+        language,
+        currency,
+        maxResult,
+        sortBy,
+        occupancy: {
+          numberOfAdult,
+          numberOfChildren,
+        },
         dailyRate: {
           minimum: minPrice,
           maximum: maxPrice,
         },
-        occupancy: {
-          numberOfAdult: 2,
-          numberOfChildren: 0,
-        },
+        minimumStarRating,
+        minimumReviewScore,
+        onlyDiscountedProperties: discountOnly,
       },
     },
   };
