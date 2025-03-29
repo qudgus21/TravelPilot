@@ -32,15 +32,15 @@ export async function generateCityIntro(cityName, title) {
 
   try {
     const res = await openai.chat.completions.create({
-      model: "gpt-4",
-      temperature: 0.7,
+      model: "gpt-3.5-turbo",
+      temperature: 0.6,
       messages: [{ role: "user", content: prompt }],
     });
 
     return res.choices[0].message.content.trim();
   } catch (error) {
     console.error("GPT 응답 실패:", error);
-    return "⚠️ 숙소 설명을 생성하는 데 실패했습니다.";
+    return "❌숙소 설명을 생성하는 데 실패했습니다.";
   }
 }
 
@@ -49,10 +49,11 @@ export async function generateHotelDescription(hotel) {
   const prompt = `
   당신은 여행 블로그 에디터입니다.
 
-  아래 숙소를 여행 블로그에서 소개하듯, 6~8문장 분량의 글로 작성해주세요.
-  문체는 따뜻하지만 너무 캐주얼하지 않게, 정중한 설명체(“~입니다”, “~합니다”)로 써주세요.
-  가격이나 숫자보다 숙소의 분위기, 위치, 장점 등을 중심으로 설명하며,
-  객관적인 정보와 감성적인 묘사를 균형 있게 포함해주세요.
+  아래 숙소 정보를 참고해서 여행 블로그 스타일의 설명글을 작성해주세요.
+  길이는 6~8문장 정도이며, 문체는 따뜻하고 정중한 설명체(“~입니다”, “~합니다”)를 사용해주세요.
+  독자가 숙소를 고를 때 참고할 수 있도록 자연스럽고 신뢰감 있는 글로 작성해주세요.
+  광고처럼 과장된 표현은 피하고, 실제 여행자가 참고할 수 있도록 정보 전달 중심의 글로 구성해주세요.
+  가격이나 숫자보다 숙소의 분위기, 위치, 장점 등을 중심으로 설명해주세요.
 
   - 숙소 이름: ${hotel.hotelName}
   - 도시: ${hotel.cityName}
@@ -63,15 +64,14 @@ export async function generateHotelDescription(hotel) {
   - 숙소의 위치와 주변 환경
   - 객실 분위기나 특징
   - 제공되는 주요 서비스 (조식, 수영장 등)
-  - 어떤 여행자에게 어울리는지
-  - 숙소의 전반적인 인상
-
-  너무 광고처럼 과장하지 말고, 독자가 숙소를 고를 때 참고할 수 있도록
-  자연스럽고 신뢰감 있는 글로 작성해주세요.
+  - 숙소를 이용했을 때 느낄 수 있는 인상 (객관적인 평가 중심)
+  - GPT가 알고 있는 관련 정보(지역 분위기, 브랜드 특징 등)도 자유롭게 포함해도 됩니다.
+  - 필요하다면, 유용한 가상의 정보도 포함할 수 있습니다 (단, 자연스럽고 신뢰 가능한 수준에서)
   `;
 
   try {
     const res = await openai.chat.completions.create({
+      //model: "gpt-4",
       model: "gpt-3.5-turbo",
       temperature: 0.7,
       messages: [{ role: "user", content: prompt }],
@@ -80,6 +80,6 @@ export async function generateHotelDescription(hotel) {
     return res.choices[0].message.content.trim();
   } catch (error) {
     console.error("GPT 응답 실패:", error);
-    return "⚠️ 숙소 설명을 생성하는 데 실패했습니다.";
+    return "❌숙소 설명을 생성하는 데 실패했습니다.";
   }
 }
