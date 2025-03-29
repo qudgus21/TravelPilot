@@ -39,7 +39,7 @@ export async function fetchHotels({
   numberOfAdult = 2,
   numberOfChildren = 0,
   minPrice = 0,
-  maxPrice = 100000,
+  maxPrice,
   minimumStarRating = 0,
   minimumReviewScore = 0,
   discountOnly = false,
@@ -70,10 +70,6 @@ export async function fetchHotels({
           numberOfAdult,
           numberOfChildren,
         },
-        dailyRate: {
-          minimum: minPrice,
-          maximum: maxPrice,
-        },
         minimumStarRating,
         minimumReviewScore,
         onlyDiscountedProperties: discountOnly,
@@ -81,12 +77,23 @@ export async function fetchHotels({
     },
   };
 
-  const res = await axios.post(process.env.AGODA_API_URL, payload, {
-    headers: {
-      Authorization: process.env.AGODA_API_KEY,
-      "Content-Type": "application/json",
-    },
-  });
+  if (maxPrice) {
+    additional.dailyRate = {
+      minimum: minPrice,
+      maximum: maxPrice,
+    };
+  }
 
-  return res.data.results;
+  try {
+    const res = await axios.post(process.env.AGODA_API_URL, payload, {
+      headers: {
+        Authorization: process.env.AGODA_API_KEY,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return res.data.results;
+  } catch (error) {
+    console.error("❌ 호텔 정보 요청 실패:", error.message);
+  }
 }
