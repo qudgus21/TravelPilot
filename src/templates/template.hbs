@@ -1,0 +1,85 @@
+<article class="post">
+  <h1 class="title">{{title}}</h1>
+
+  <section class="city-intro">
+    <p>{{cityIntro}}</p>
+  </section>
+
+  {{#each ResultHotelsData}}
+    <section class="hotel-card">
+      <h2 class="hotel-name">{{hotelName}}</h2>
+
+      <div class="main-image">
+        <a href="{{affiliateTextLink}}" target="_blank">
+          <img src="{{imageURL}}" alt="{{hotelName}} 대표 이미지" />
+        </a>
+      </div>
+
+      <div class="hotel-description">
+        <p>{{generatedDescription}}</p>
+      </div>
+
+      <div class="amenities">
+        <h3>주요 편의시설</h3>
+        <ul>
+          {{#each amenities}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </div>
+
+      <div class="additional-images">
+        <h3>호텔 사진 미리보기</h3>
+        <div class="tiles">
+          {{#each tiles}}
+            <div class="tile-thumb">
+              <a href="{{this}}" target="_blank">
+                <img src="{{this}}" alt="추가 이미지" />
+              </a>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="hotel-link">
+        <a
+          href="{{affiliateTextLink}}"
+          class="details-button"
+          target="_blank"
+        >자세히 보기</a>
+      </div>
+    </section>
+  {{/each}}
+</article>
+
+<style>
+  .post { max-width: 680px; margin: 0 auto; font-family: sans-serif; padding:
+  2rem; line-height: 1.6; } .title { font-size: 2rem; margin-bottom: 1rem;
+  text-align: center; } .city-intro, .hotel-card, .hotel-description,
+  .amenities, .additional-images, .hotel-link { max-width: 680px; margin-left:
+  auto; margin-right: auto; } .city-intro p { font-size: 1.1rem; margin-bottom:
+  2rem; } .hotel-card { border-top: 1px solid #ddd; padding-top: 2rem;
+  margin-top: 2rem; } .hotel-name { font-size: 1.8rem; font-weight: bold; color:
+  #333; text-align: left; margin-bottom: 1rem; background-color: #f7f7f7;
+  padding: 0.5rem 1rem; border-radius: 0.4rem; } .main-image { display: flex;
+  justify-content: center; max-width: 680px; margin: 0 auto; } .main-image img {
+  width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover;
+  border-radius: 0.5rem; } .hotel-description { margin-top: 1rem; } .amenities
+  h3 { margin-top: 1.5rem; font-size: 1.1rem; } .amenities ul { display: flex;
+  flex-wrap: wrap; gap: 0.5rem 0.75rem; list-style: none; padding-left: 0;
+  margin-top: 0.5rem; } .amenities li { background: #f0f0f0; padding: 0.4rem
+  0.8rem; border-radius: 20px; font-size: 0.95rem; } .additional-images {
+  margin-top: 1.5rem; } .additional-images .tiles { display: flex; gap: 0.5rem;
+  flex-wrap: wrap; margin-top: 0.5rem; } .tile-thumb { display: block; width:
+  120px; height: 90px; overflow: hidden; border-radius: 0.25rem; } .tile-thumb
+  img { width: 100%; height: 100%; object-fit: cover; border-radius: 0.25rem;
+  display: block; cursor: zoom-in; } .hotel-link { margin-top: 1.5rem;
+  text-align: center; } .details-button { display: inline-block; width: 100%;
+  max-width: 300px; padding: 1rem 1.5rem; background-color: #ff5a5f; color:
+  white; text-decoration: none; border-radius: 0.5rem; font-weight: bold;
+  font-size: 1.1rem; transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); } .details-button:hover {
+  background-color: #e04848; transform: translateY(-2px); } @media (max-width:
+  600px) { .post { padding: 1rem; } .main-image img { aspect-ratio: auto; }
+  .details-button { font-size: 1rem; padding: 0.8rem 1rem; } }
+</style>
