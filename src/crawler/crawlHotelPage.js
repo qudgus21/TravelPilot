@@ -101,7 +101,9 @@ export async function crawlHotelByName(hotelName) {
         tiles: getImageSrcs(
           'button[data-element-name="hotel-mosaic-tile"]',
           "img"
-        ).slice(1),
+        )
+          .slice(1)
+          .pop(),
 
         // ✅ highlights: 각 div[data-element-name="atf-property-highlight"] > p.keaLUr
         highlights: getAllTexts(
