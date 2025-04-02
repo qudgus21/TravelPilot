@@ -103,7 +103,7 @@ export async function crawlHotelByName(hotelName) {
           "img"
         )
           .slice(1)
-          .pop(),
+          .slice(0, -1),
 
         // ✅ highlights: 각 div[data-element-name="atf-property-highlight"] > p.keaLUr
         highlights: getAllTexts(
