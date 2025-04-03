@@ -21,6 +21,7 @@ export async function generateCityIntro(cityName, title) {
   - 길이: 약 2문단
   - 도시 특성: 도시의 분위기나 특징을 GPT가 알고 있는 정보에 기반해 자연스럽게 반영해주세요
 
+  글 제목은 말하지마.
   글은 이 도시를 처음 여행하는 사람들이 숙소를 고르기 전에 읽는다는 상황입니다.
   명소 이름은 2~3개 이내로 자연스럽게 언급하고, 감성적인 분위기와 함께 실용적인 정보(도시 분위기, 위치, 주변 환경, 주요 거리나 지역의 특징 등)를 함께 담아주세요.  
   너무 시적인 표현보다는, 여행을 준비하는 사람에게 실질적인 도움이 되는 설명형 문장 위주로 구성해주세요.
@@ -32,7 +33,8 @@ export async function generateCityIntro(cityName, title) {
 
   try {
     const res = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
+      // model: "gpt-3.5-turbo",
       temperature: 0.6,
       messages: [{ role: "user", content: prompt }],
     });
@@ -54,7 +56,9 @@ export async function generateHotelDescription(hotel) {
   독자가 숙소를 고를 때 참고할 수 있도록 자연스럽고 신뢰감 있는 글로 작성해주세요.
   광고처럼 과장된 표현은 피하고, 실제 여행자가 참고할 수 있도록 정보 전달 중심의 글로 구성해주세요.
   가격이나 숫자보다 숙소의 분위기, 위치, 장점 등을 중심으로 설명해주세요.
-    
+  무료 WIFI에 대한 내용은 포함시키지 마세요.
+  '두 명의 여행자에게' 같은 표현은 사용하지 마세요.
+
   - 숙소 이름: ${hotel.hotelName}
   - 도시: ${hotel.cityName}
   - 숙소 기본 설명: ${hotel.description}
@@ -71,7 +75,7 @@ export async function generateHotelDescription(hotel) {
 
   try {
     const res = await openai.chat.completions.create({
-      //model: "gpt-4",
+      // model: "gpt-4",
       model: "gpt-3.5-turbo",
       temperature: 0.7,
       messages: [{ role: "user", content: prompt }],
