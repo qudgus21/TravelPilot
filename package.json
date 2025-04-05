@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "post": "node src/main/postPopularHotels.js"
+    "post": "node src/main/index.js"
   },
   "keywords": [],
   "author": "",
