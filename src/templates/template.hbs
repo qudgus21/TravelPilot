@@ -1,7 +1,9 @@
 <article class="post">
-  <section class="city-image">
-    <img src="{{cityImageUrl}}" alt="{{cityName}} 대표 이미지" />
-  </section>
+  {{#if cityImageUrl}}
+    <section class="city-image">
+      <img src="{{cityImageUrl}}" alt="{{cityName}} 대표 이미지" />
+    </section>
+  {{/if}}
 
   <section class="city-intro">
     <p>{{cityIntro}}</p>
