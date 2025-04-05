@@ -78,7 +78,7 @@ export async function fetchHotels({
   };
 
   if (maxPrice) {
-    additional.dailyRate = {
+    payload.criteria.additional.dailyRate = {
       minimum: minPrice,
       maximum: maxPrice,
     };
