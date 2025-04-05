@@ -4,20 +4,41 @@ import minimist from "minimist";
 import cityMap from "../../data/cities.json" assert { type: "json" };
 import { crawlHotelByName } from "../crawler/crawlHotelPage.js";
 import { fetchHotels } from "../agoda/fetchHotels.js";
-import {
-  generateCityIntro,
-  generateHotelDescription,
-  generatePostTitle,
-} from "../gpt/generateText.js";
-import {
-  createAffiliateImageTag,
-  createAffiliateLink,
-} from "../agoda/createAffiliateLink.js";
+import { generateCityIntro, generateHotelDescription, generatePostTitle } from "../gpt/generateText.js";
+import { createAffiliateImageTag, createAffiliateLink } from "../agoda/createAffiliateLink.js";
 import { compileTemplate } from "../templates/compileHtml.js";
 import { getCityImage } from "../pixabay/getCityImage.js";
 import { postToWordpress } from "../wordpress/postToWordPress.js";
 
 dotenv.config();
+
+const typeOptionMap = {
+  추천: {
+    sortBy: "Recommended",
+  },
+  가족: {
+    sortBy: "GroupsReviewScore",
+    numberOfAdult: 2,
+    numberOfChildren: 2,
+  },
+  나홀로: {
+    sortBy: "SoloTravllersReviewScore",
+    numberOfAdult: 1,
+  },
+  커플: {
+    sortBy: "CouplesReviewScore",
+    numberOfAdult: 2,
+  },
+  럭셔리: {
+    minimumStarRating: 5,
+    minimumReviewScore: 7,
+  },
+  가성비: {
+    sortBy: "PriceAsc",
+    minimumReviewScore: 8,
+    minimumStarRating: 3,
+  },
+};
 
 const getCityId = (inputCityName) => {
   // 1. 정확히 일치하는 키 우선
@@ -37,8 +58,14 @@ const getCityId = (inputCityName) => {
   throw new Error(`❌도시 ID를 찾을 수 없습니다: ${inputCityName}`);
 };
 
-const getHotelList = async (cityId) => {
-  const hotelList = await fetchHotels({ cityId });
+const getHotelList = async (cityId, type) => {
+  const options = typeOptionMap[type] || typeOptionMap["추천"];
+
+  const hotelList = await fetchHotels({
+    cityId,
+    ...options,
+  });
+
   if (!hotelList || hotelList.length === 0) {
     throw new Error("❌호텔 리스트를 가져오지 못했습니다.");
   }
@@ -103,7 +130,7 @@ const run = async () => {
       t: "type",
     },
     default: {
-      type: "가성비",
+      type: "추천",
     },
   });
 
@@ -119,7 +146,13 @@ const run = async () => {
   const cityId = getCityId(cityName);
 
   //2. 호텔 리스트 조회
-  let hotels = await getHotelList(cityId);
+  let hotels = await getHotelList(cityId, type);
+
+  console.log(
+    hotels.map((item) => {
+      return [item.landingURL, item.hotelName];
+    })
+  );
 
   //3. 크롤링
   hotels = await crawlHotelDetails(cityName, hotels);
@@ -130,15 +163,11 @@ const run = async () => {
   //5. GPT로 글 제목, 도시설명, 인트로 숙소설명 얻기
   const title = await generatePostTitle({
     city: cityName,
-    topic: "숙소", // 정보, 숙소 등
-    concept: "추천", // 인기, 가성비
+    topic: "숙소",
+    concept: type,
   });
 
-  const { cityIntro, ResultHotelsData } = await getTextByGPT(
-    cityName,
-    title,
-    hotels
-  );
+  const { cityIntro, ResultHotelsData } = await getTextByGPT(cityName, title, hotels);
 
   //6. pixabay로 도시 사진 얻기
   const cityImageUrl = await getCityImage(cityName);
@@ -155,6 +184,11 @@ const run = async () => {
   fs.writeFileSync(`./output/${fileName}`, html, "utf-8");
 
   //8. 블로그 포스팅
-  await postToWordpress(html, title, cityImageUrl);
+  await postToWordpress({
+    html,
+    title,
+    imageUrl: cityImageUrl,
+    cityName,
+  });
 };
 run();
