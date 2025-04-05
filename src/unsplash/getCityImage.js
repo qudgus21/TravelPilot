@@ -18,10 +18,10 @@ export async function getCityImage(cityName) {
 
     const baseUrl = response.data?.results?.[0]?.urls?.raw;
 
-    // 원하는 가로 비율 이미지 생성 (예: 1200x630)
-    const imageUrl = `${baseUrl}&w=1200&h=630&fit=crop`;
+    if (!baseUrl) return null;
 
-    return imageUrl || null;
+    const imageUrl = `${baseUrl}&w=1200&h=630&fit=crop`;
+    return imageUrl;
   } catch (error) {
     console.error(
       "도시 이미지 가져오기 실패:",
