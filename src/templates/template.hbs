@@ -46,44 +46,37 @@
       </div>
 
       <div class="hotel-link">
-        <a
-          href="{{affiliateTextLink}}"
-          class="details-button"
-          target="_blank"
-        >자세히 보기</a>
+        <a href="{{affiliateTextLink}}" class="details-button" target="_blank">자세히 보기</a>
       </div>
     </section>
   {{/each}}
+  <footer class="disclaimer-box">
+    <div class="disclaimer">
+      <!-- prettier-ignore -->
+      <p><strong>구루루의 여행일기</strong>는 실제 숙소 데이터를 바탕으로 정확하고 신뢰할 수 있는 여행 정보를 제공합니다.</p>
+      <p>소개된 숙소는 평점, 가격, 편의시설, 사진, 여행자 유형별 만족도 등을 기준으로 선별되며, 매일 최신 정보로 업데이트됩니다.</p>
+    </div>
+  </footer>
 </article>
 
 <style>
-  .post { margin: 0 auto; font-family: sans-serif; padding: 2rem; line-height:
-  1.6; } .title { font-size: 2rem; margin-bottom: 1rem; text-align: center; }
-  .city-intro p { font-size: 1.1rem; margin-bottom: 2rem; } .hotel-card {
-  border-top: 1px solid #ddd; padding-top: 2rem; margin-top: 2rem; } .hotel-name
-  { font-size: 1.8rem; font-weight: bold; color: #333; text-align: left;
-  margin-bottom: 1rem; background-color: #f7f7f7; padding: 0.5rem 1rem;
-  border-radius: 0.4rem; } .main-image { display: flex; justify-content: center;
-  margin: 0 auto; } .main-image img { width: 100%; height: auto; aspect-ratio: 2
-  / 1; object-fit: cover; border-radius: 0.5rem; } .hotel-description {
-  margin-top: 1rem; } .hotel-card h3 { font-size: 1.1rem; margin-top: 1.5rem;
-  margin-bottom: 0.5rem; font-weight: bold; color: #333; } .amenities ul {
-  display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; list-style: none;
-  padding-left: 0; margin: 0; } .amenities li { background: #f0f0f0; padding:
-  0.4rem 0.8rem; border-radius: 20px; font-size: 0.95rem; } .additional-images {
-  margin-top: 1.5rem; } .additional-images .tiles { display: flex; gap: 0.5rem;
-  flex-wrap: wrap; margin-top: 0.5rem; } .tiles p { margin: 0; } .tiles a {
-  text-decoration: none; } .tile-thumb { width: 120px; height: 90px; overflow:
-  hidden; border-radius: 0.25rem; flex: 0 0 auto; } .tile-thumb img { width:
-  100%; height: 100%; object-fit: cover; border-radius: 0.25rem; display: block;
-  cursor: zoom-in; } .hotel-link { margin-top: 1.5rem; text-align: center; }
-  .details-button { display: inline-block; width: 100%; max-width: 300px;
-  padding: 1rem 1.5rem; background-color: #ff5a5f; color: white;
-  text-decoration: none; border-radius: 0.5rem; font-weight: bold; font-size:
-  1.1rem; transition: background-color 0.3s, transform 0.2s; box-shadow: 0 4px
-  8px rgba(0, 0, 0, 0.1); } .details-button:hover { background-color: #e04848;
-  transform: translateY(-2px); } @media (max-width: 600px) { .post { padding:
-  1rem; } .main-image img { aspect-ratio: auto; } .details-button { font-size:
-  1rem; padding: 0.8rem 1rem; } } .city-image img { width: 100%; height: auto;
-  border-radius: 0.5rem; object-fit: cover; margin-bottom: 1.5rem; }
+  .post { margin: 0 auto; font-family: sans-serif; padding: 2rem; line-height: 1.6; } .title { font-size: 2rem; margin-bottom:
+  1rem; text-align: center; } .city-intro p { font-size: 1.1rem; margin-bottom: 2rem; } .hotel-card { border-top: 1px solid #ddd;
+  padding-top: 2rem; margin-top: 2rem; } .hotel-name { font-size: 1.8rem; font-weight: bold; color: #333; text-align: left;
+  margin-bottom: 1rem; background-color: #f7f7f7; padding: 0.5rem 1rem; border-radius: 0.4rem; } .main-image { display: flex;
+  justify-content: center; margin: 0 auto; } .main-image img { width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover;
+  border-radius: 0.5rem; } .hotel-description { margin-top: 1rem; } .hotel-card h3 { font-size: 1.1rem; margin-top: 1.5rem;
+  margin-bottom: 0.5rem; font-weight: bold; color: #333; } .amenities ul { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem;
+  list-style: none; padding-left: 0; margin: 0; } .amenities li { background: #f0f0f0; padding: 0.4rem 0.8rem; border-radius:
+  20px; font-size: 0.95rem; } .additional-images { margin-top: 1.5rem; } .additional-images .tiles { display: flex; gap: 0.5rem;
+  flex-wrap: wrap; margin-top: 0.5rem; } .tiles p { margin: 0; } .tiles a { text-decoration: none; } .tile-thumb { width: 120px;
+  height: 90px; overflow: hidden; border-radius: 0.25rem; flex: 0 0 auto; } .tile-thumb img { width: 100%; height: 100%;
+  object-fit: cover; border-radius: 0.25rem; display: block; cursor: zoom-in; } .hotel-link { margin-top: 1.5rem; text-align:
+  center; } .details-button { display: inline-block; width: 100%; max-width: 300px; padding: 1rem 1.5rem; background-color:
+  #ff5a5f; color: white; text-decoration: none; border-radius: 0.5rem; font-weight: bold; font-size: 1.1rem; transition:
+  background-color 0.3s, transform 0.2s; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); } .details-button:hover { background-color:
+  #e04848; transform: translateY(-2px); } @media (max-width: 600px) { .post { padding: 1rem; } .main-image img { aspect-ratio:
+  auto; } .details-button { font-size: 1rem; padding: 0.8rem 1rem; } } .city-image img { width: 100%; height: auto; border-radius:
+  0.5rem; object-fit: cover; margin-bottom: 1.5rem; }.disclaimer { background-color: #fef9e7; border-left: 5px solid #f7c948;
+  padding: 0.5rem 1rem; margin-top: 3rem; border-radius: 0.5rem; font-size: 0.95rem; color: #444; }
 </style>
