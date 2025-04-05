@@ -7,13 +7,14 @@ import { fetchHotels } from "../agoda/fetchHotels.js";
 import {
   generateCityIntro,
   generateHotelDescription,
+  generatePostTitle,
 } from "../gpt/generateText.js";
 import {
   createAffiliateImageTag,
   createAffiliateLink,
 } from "../agoda/createAffiliateLink.js";
 import { compileTemplate } from "../templates/compileHtml.js";
-import { getCityImage } from "../unsplash/getCityImage.js";
+import { getCityImage } from "../pixabay/getCityImage.js";
 import { postToWordpress } from "../wordpress/postToWordPress.js";
 
 dotenv.config();
@@ -126,18 +127,23 @@ const run = async () => {
   //4. 어필리에이트 링크 추가
   hotels = addAffiliateLink(hotels);
 
-  //5. GPT로 도시설명, 인트로 숙소설명 얻기
-  const title = `${cityName} 가성비 숙소 TOP ${hotels.length}`;
+  //5. GPT로 글 제목, 도시설명, 인트로 숙소설명 얻기
+  const title = await generatePostTitle({
+    city: cityName,
+    topic: "숙소", // 정보, 숙소 등
+    concept: "추천", // 인기, 가성비
+  });
+
   const { cityIntro, ResultHotelsData } = await getTextByGPT(
     cityName,
     title,
     hotels
   );
 
-  //6. unsplahs로 도시 사진 얻기
+  //6. pixabay로 도시 사진 얻기
   const cityImageUrl = await getCityImage(cityName);
 
-  //6. html 생성
+  //7. html 생성
   const html = compileTemplate({
     title,
     cityIntro,
@@ -148,7 +154,7 @@ const run = async () => {
   const fileName = `${title}_post.html`;
   fs.writeFileSync(`./output/${fileName}`, html, "utf-8");
 
-  //7. 블로그 포스팅
+  //8. 블로그 포스팅
   await postToWordpress(html, title, cityImageUrl);
 };
 run();
