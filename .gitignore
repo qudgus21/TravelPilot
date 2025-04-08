@@ -1,4 +1,5 @@
 .env
 node_modules/
 /data/hotels.csv
+/data/post-log.json
 /output

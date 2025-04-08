@@ -29,7 +29,7 @@ const getCategoryIdByName = async (categoryName) => {
 };
 
 // 🔼 이 함수로 글 작성 시 featured_media 포함
-export const postToWordpress = async ({ html, title, imageUrl, categoryName = "여행", cityName }) => {
+export const postToWordpress = async ({ html, title, imageUrl, categoryName = "여행", cityName, scheduledAt }) => {
   try {
     const categoryId = await getCategoryIdByName(categoryName);
 
@@ -38,7 +38,9 @@ export const postToWordpress = async ({ html, title, imageUrl, categoryName = "�
       content: html,
       categories: [categoryId],
       // status: "publish",
-      status: "draft",
+      // status: "draft",
+      status: "future",
+      date: scheduledAt,
 
       // ✅ Rank Math SEO 메타 필드 추가
       meta: {

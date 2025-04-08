@@ -2,8 +2,8 @@ import fs from "fs";
 import { exec } from "child_process";
 import path from "path";
 
-const JOBS_PATH = path.resolve("./data/jobQueue.json");
-const LOG_PATH = path.resolve("./data/completedJobs.json");
+const JOBS_PATH = path.resolve("../data/jobQueue.json");
+const LOG_PATH = path.resolve("../data/completedJobs.json");
 
 function loadJobs() {
   const allJobs = JSON.parse(fs.readFileSync(JOBS_PATH, "utf-8"));

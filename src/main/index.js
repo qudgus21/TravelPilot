@@ -137,6 +137,7 @@ const run = async () => {
 
   const cityName = args.city;
   const type = args.type;
+  const scheduledAt = args.scheduledAt;
 
   if (!cityName) {
     console.error("❌ 도시 이름을 입력해주세요. 예: -c 서울");
@@ -192,6 +193,7 @@ const run = async () => {
     title,
     imageUrl: cityImageUrl,
     cityName,
+    scheduledAt,
   });
 };
 run();

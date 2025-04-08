@@ -67,7 +67,7 @@ for (let i = jobList.length - 1; i > 0; i--) {
   [jobList[i], jobList[j]] = [jobList[j], jobList[i]];
 }
 
-const outputPath = path.resolve("./data/jobQueue.json");
+const outputPath = path.resolve("../data/jobQueue.json");
 fs.writeFileSync(outputPath, JSON.stringify(jobList, null, 2), "utf-8");
 
 console.log(`✅ jobQueue.json 생성 완료 (셔플됨, ${jobList.length}개)`);
