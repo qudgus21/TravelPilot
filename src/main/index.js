@@ -8,6 +8,7 @@ import { generateCityIntro, generateHotelDescription, generatePostTitle } from "
 import { createAffiliateImageTag, createAffiliateLink } from "../agoda/createAffiliateLink.js";
 import { compileTemplate } from "../templates/compileHtml.js";
 import { getCityImage } from "../pixabay/getCityImage.js";
+import { getImageUrlFromMediaId, uploadImageFromUrl } from "../wordpress/imageHelper.js";
 import { postToWordpress } from "../wordpress/postToWordPress.js";
 
 dotenv.config();
@@ -169,15 +170,17 @@ const run = async () => {
 
   const { cityIntro, ResultHotelsData } = await getTextByGPT(cityName, title, hotels);
 
-  //6. pixabay로 도시 사진 얻기
+  //6. pixabay로 도시 사진 얻기 및 워드프레스 저장
   const cityImageUrl = await getCityImage(cityName);
+  const mediaId = await uploadImageFromUrl(cityImageUrl);
+  const uploadedCityImageUrl = await getImageUrlFromMediaId(mediaId);
 
   //7. html 생성
   const html = compileTemplate({
     title,
     cityIntro,
     ResultHotelsData,
-    cityImageUrl,
+    cityImageUrl: uploadedCityImageUrl,
   });
 
   const fileName = `${title}_post.html`;

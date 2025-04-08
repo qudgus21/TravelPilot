@@ -28,42 +28,10 @@ const getCategoryIdByName = async (categoryName) => {
   }
 };
 
-// 🔽 이미지 다운로드 후 워드프레스에 업로드
-const uploadFeaturedImageFromUrl = async (title, imageUrl) => {
-  try {
-    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-
-    const sanitize = (str) =>
-      str
-        .normalize("NFKD") // 한글 → 초성 분리 등 유니코드 정리
-        .replace(/[^\w\s-]/g, "") // 특수문자 제거
-        .replace(/\s+/g, "-") // 공백은 하이픈으로
-        .toLowerCase();
-
-    const fileName = `${sanitize(title)}.jpg`;
-
-    const uploadRes = await axios.post(`${process.env.WP_API}/wp/v2/media`, response.data, {
-      headers: {
-        Authorization: "Basic " + Buffer.from(`${process.env.WP_USER}:${process.env.WP_APP_PASS}`).toString("base64"),
-        "Content-Type": "image/jpeg",
-        "Content-Disposition": `attachment; filename="${fileName}"`,
-      },
-    });
-
-    return uploadRes.data.id;
-  } catch (error) {
-    console.error("❌ 대표 이미지 업로드 실패:", error.response?.data || error.message);
-    return null;
-  }
-};
-
 // 🔼 이 함수로 글 작성 시 featured_media 포함
 export const postToWordpress = async ({ html, title, imageUrl, categoryName = "여행", cityName }) => {
   try {
     const categoryId = await getCategoryIdByName(categoryName);
-
-    //이미지 업로드 필요시
-    //const mediaId = await uploadFeaturedImageFromUrl(title, imageUrl);
 
     const postBody = {
       title,
